@@ -1,11 +1,12 @@
 import {ThorClient} from "../../../../src/thor-client"
-import {randomBetween} from "../../../../src/utils"
+import {randomBetween, randomBlockNumber} from "../../../../src/utils"
 import {node1Client, node2Client} from "../../../test-clients"
 
-describe('POST /logs/event', () => {
+describe('POST /logs/transfer', () => {
+
 
   const performRequest = async (client: ThorClient, offset: number, from: number): Promise<any> => {
-    const res = await client.queryEventLogs({
+    const res = await client.queryTransferLogs({
       options: {
         limit: 100,
         offset,
@@ -26,7 +27,7 @@ describe('POST /logs/event', () => {
 
   const performEqualityTest = async (offset: number, from: number) => {
 
-    console.log(`EVENTS: ${offset} and from: ${from}`)
+    console.log(`TRANSFERS: ${offset} and from: ${from}`)
 
     const node1Events = await performRequest(node1Client, offset, from)
     const node2Events = await performRequest(node2Client, offset, from)
@@ -38,7 +39,7 @@ describe('POST /logs/event', () => {
     return node1Events?.length ?? 0
   }
 
-  test('VTHO Events - Should match', async () => {
+  test('Transfer Events - Should match', async () => {
 
     for (let i = 0; i < 100; i++) {
       // -1 million blocks to ensure we have events for each query
