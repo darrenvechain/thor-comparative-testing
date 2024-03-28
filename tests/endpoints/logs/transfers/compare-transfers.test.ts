@@ -1,6 +1,6 @@
 import {ThorClient} from "../../../../src/thor-client"
 import {randomBetween} from "../../../../src/utils"
-import {node1Client, node2Client} from "../../../test-clients"
+import {env, node1Client, node2Client} from "../../../test-clients"
 
 describe('POST /logs/transfer', () => {
 
@@ -42,7 +42,7 @@ describe('POST /logs/transfer', () => {
 
     for (let i = 0; i < 100; i++) {
       // -1 million blocks to ensure we have events for each query
-      const from = randomBetween(0, 17_000_000)
+      const from = randomBetween(0, env.endBlock)
       const offset = randomBetween(0, 100)
 
       await performEqualityTest(offset, from)

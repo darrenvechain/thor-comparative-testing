@@ -10,7 +10,12 @@ if (!node1 || !node2) {
 const node1Client = new ThorClient(node1)
 const node2Client = new ThorClient(node2)
 
+const env = {
+  endBlock: 17_000_000
+}
+
 export {
   node1Client,
-  node2Client
+  node2Client,
+  env,
 }
