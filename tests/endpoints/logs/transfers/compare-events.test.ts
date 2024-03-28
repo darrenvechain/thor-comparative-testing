@@ -1,9 +1,8 @@
 import {ThorClient} from "../../../../src/thor-client"
-import {randomBetween, randomBlockNumber} from "../../../../src/utils"
+import {randomBetween} from "../../../../src/utils"
 import {node1Client, node2Client} from "../../../test-clients"
 
 describe('POST /logs/transfer', () => {
-
 
   const performRequest = async (client: ThorClient, offset: number, from: number): Promise<any> => {
     const res = await client.queryTransferLogs({
