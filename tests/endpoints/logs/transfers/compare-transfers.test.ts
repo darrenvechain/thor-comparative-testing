@@ -48,12 +48,11 @@ describe("POST /logs/transfer", () => {
 
   test("Transfer Events - Should match", async () => {
     for (let i = 0; i < 1_000; i++) {
-      // -1 million blocks to ensure we have events for each query
       const from = randomBetween(0, env.endBlock);
       const offset = randomBetween(0, 100);
       const order = randomOrder();
 
       await performEqualityTest(offset, from, order);
     }
-  }, 120_000_0);
+  }, 300_000);
 });
