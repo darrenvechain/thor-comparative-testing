@@ -1,10 +1,14 @@
-import {ThorClient} from "../../../../src/thor-client"
-import {randomBetween} from "../../../../src/utils"
-import {env, node1Client, node2Client} from "../../../test-clients"
+import { ThorClient } from "../../../../src/thor-client";
+import { randomBetween, randomOrder } from "../../../../src/utils";
+import { env, node1Client, node2Client } from "../../../test-config";
 
-describe('POST /logs/event', () => {
-
-  const performRequest = async (client: ThorClient, offset: number, from: number): Promise<any> => {
+describe("POST /logs/event", () => {
+  const performRequest = async (
+    client: ThorClient,
+    offset: number,
+    from: number,
+    order: "asc" | "desc",
+  ): Promise<any> => {
     const res = await client.queryEventLogs({
       options: {
         limit: 100,
@@ -13,40 +17,43 @@ describe('POST /logs/event', () => {
       // Query all events on chain
       criteriaSet: [],
       range: {
-        unit: 'block',
+        unit: "block",
         from,
-      }
-    })
+      },
+      order,
+    });
 
-    expect(res.httpCode).toBe(200)
-    expect(res.success).toBe(true)
+    expect(res.httpCode).toBe(200);
+    expect(res.success).toBe(true);
 
-    return res.body
-  }
+    return res.body;
+  };
 
-  const performEqualityTest = async (offset: number, from: number) => {
+  const performEqualityTest = async (
+    offset: number,
+    from: number,
+    order: "asc" | "desc",
+  ) => {
+    console.log(`EVENTS (offset=${offset} from=${from})`);
 
-    console.log(`EVENTS: ${offset} and from: ${from}`)
+    const node1Events = await performRequest(node1Client, offset, from, order);
+    const node2Events = await performRequest(node2Client, offset, from, order);
 
-    const node1Events = await performRequest(node1Client, offset, from)
-    const node2Events = await performRequest(node2Client, offset, from)
+    expect(node1Events).toBeDefined();
+    expect(node2Events).toBeDefined();
+    expect(node1Events).toEqual(node2Events);
 
-    expect(node1Events).toBeDefined()
-    expect(node2Events).toBeDefined()
-    expect(node1Events).toEqual(node2Events)
+    return node1Events?.length ?? 0;
+  };
 
-    return node1Events?.length ?? 0
-  }
-
-  test('VTHO Events - Should match', async () => {
-
-    for (let i = 0; i < 100; i++) {
+  test("VTHO Events - Should match", async () => {
+    for (let i = 0; i < 1_000; i++) {
       // -1 million blocks to ensure we have events for each query
-      const from = randomBetween(0, env.endBlock)
-      const offset = randomBetween(0, 100)
+      const from = randomBetween(0, env.endBlock);
+      const offset = randomBetween(0, 100);
+      const order = randomOrder();
 
-      await performEqualityTest(offset, from)
+      await performEqualityTest(offset, from, order);
     }
-  }, 120_000)
+  }, 120_000_0);
 });
-
