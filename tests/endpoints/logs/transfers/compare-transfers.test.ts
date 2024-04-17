@@ -19,6 +19,7 @@ describe("POST /logs/transfer", () => {
       range: {
         unit: "block",
         from,
+        to: 18_000_000,
       },
       order,
     });
