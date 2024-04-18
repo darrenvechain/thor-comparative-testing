@@ -1,17 +1,17 @@
 import { ThorClient } from "../src/thor-client";
 
-const node1 = process.env.NODE_1_URL;
-const node2 = process.env.NODE_2_URL;
+const node1 = process.env.BLUE_NODE;
+const node2 = process.env.GREEN_NODE;
 
 if (!node1 || !node2) {
-  throw new Error("NODE_1_URL and NODE_2_URL must be set");
+  throw new Error("BLUE_NODE and GREEN_NODE must be set");
 }
 
-const node1Client = new ThorClient(node1);
-const node2Client = new ThorClient(node2);
+const blueNodeClient = new ThorClient(node1);
+const greenNodeClient = new ThorClient(node2);
 
 const env = {
   endBlock: 18_000_000,
 };
 
-export { node1Client, node2Client, env };
+export { blueNodeClient, greenNodeClient, env };
